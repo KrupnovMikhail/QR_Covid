@@ -1,5 +1,6 @@
 package com.krupnov.qrcovid
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -12,6 +13,7 @@ class MainActivity : AppCompatActivity() {
 
     var im: ImageView? = null
     var bGenerate: Button? = null
+    var bScanner: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +21,10 @@ class MainActivity : AppCompatActivity() {
 
         im = findViewById(R.id.imageView)
         bGenerate = findViewById(R.id.generateButton)
+        bScanner = findViewById(R.id.bScan)
+        bScanner?.setOnClickListener {
+            startActivity(Intent(this, ScannerActivity::class.java))
+        }
         bGenerate?.setOnClickListener {
             generateQrCode("Поставь лайк")
         }
