@@ -1,12 +1,16 @@
 package com.krupnov.qrcovid
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.zxing.WriterException
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         bGenerate = findViewById(R.id.generateButton)
         bScanner = findViewById(R.id.bScan)
         bScanner?.setOnClickListener {
-            startActivity(Intent(this, ScannerActivity::class.java))
+            checkCamerapermission()
         }
         bGenerate?.setOnClickListener {
             generateQrCode("Поставь лайк")
@@ -37,6 +41,29 @@ class MainActivity : AppCompatActivity() {
             im?.setImageBitmap(bMap)
         } catch (e: WriterException){
 
+        }
+    }
+
+    private fun checkCamerapermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 1)
+        } else {
+            startActivity(Intent(this, ScannerActivity::class.java))
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startActivity(Intent(this, ScannerActivity::class.java))
+            }
         }
     }
 }
